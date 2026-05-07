@@ -6,7 +6,8 @@ from PyQt6.QtWidgets import QApplication, QDialog, QVBoxLayout
 from PyQt6.QtCore import QTimer, pyqtSignal, QObject, Qt
 from LED_UI import Ui_Dialog
 
-# 亮灯样式
+#目标引脚电平状态显示
+#绿色-高电平
 STYLE_ON = """
 background: qradialgradient(cx:0.5, cy:0.5, radius:0.5,
                             fx:0.5, fy:0.5,
@@ -16,7 +17,7 @@ border-radius: 20px;
 border: 1px solid #00ff00;
 """
 
-# 灭灯样式（和Qt Designer里设置的一样）
+#灰色-低电平
 STYLE_OFF = """
 background: qradialgradient(cx:0.5, cy:0.5, radius:0.5,
                             fx:0.5, fy:0.5,
@@ -26,7 +27,7 @@ border-radius: 20px;
 border: 1px solid #666666;
 """
 
-
+#GUI节点
 class GUINode(Node, QObject):
 	gpio_signal = pyqtSignal(bool)
 	
@@ -36,7 +37,8 @@ class GUINode(Node, QObject):
 		self.create_subscription(Bool, 'gpio_state', self.gui_gpio_state_callback, 10)
 		self.switch_pub = self.create_publisher(Int8, 'cmd_led_switch', 10)
 		self.brightness_pub = self.create_publisher(Float32, 'cmd_led_brightness', 10)
-		
+	
+	#传信号给自定义GUI界面	
 	def gui_gpio_state_callback(self, msg):
 		self.gpio_signal.emit(msg.data)
 
